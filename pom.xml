@@ -5,6 +5,7 @@
 		<artifactId>RollingMavenHeader</artifactId>
 		<version>main-SNAPSHOT</version>
 	</parent>
+	<groupId>com.github.freedom1b2830</groupId>
 	<artifactId>global-leaks-soft</artifactId>
 	<packaging>pom</packaging>
 	<properties>

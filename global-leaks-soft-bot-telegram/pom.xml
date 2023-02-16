@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>freedom1b2830</groupId>
+		<groupId>com.github.freedom1b2830</groupId>
 		<artifactId>global-leaks-soft</artifactId>
 		<version>main-SNAPSHOT</version>
 	</parent>
@@ -13,12 +13,12 @@
 			<artifactId>telegrambots</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>freedom1b2830</groupId>
+			<groupId>com.github.freedom1b2830</groupId>
 			<artifactId>global-leaks-soft-config</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>freedom1b2830</groupId>
+			<groupId>com.github.freedom1b2830</groupId>
 			<artifactId>global-leaks-soft-module</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>
