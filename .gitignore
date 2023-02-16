@@ -1,0 +1,11 @@
+.project
+.settings/
+target
+.classpath
+
+global-leaks-soft-instance/freedom1b2830.globalleaks.instance.init.GlobalLeaks-config.yaml
+global-leaks-soft-instance/LinuxSystemJournalViaWEBModule
+
+global-leaks-soft-bot-telegram/config.yaml
+global-leaks-soft-proxy/freedom1b2830-globalleaks-proxy/
+

@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>freedom1b2830</groupId>
+		<artifactId>global-leaks-soft</artifactId>
+		<version>main-SNAPSHOT</version>
+	</parent>
+	<artifactId>global-leaks-soft-instance</artifactId>
+	<properties>
+		<mainClass>freedom1b2830.globalleaks.instance.GlobalLeaksV3</mainClass>
+
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-proxy</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-emails</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-database</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-bot-telegram</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-module-network-watchdog</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>make-${project.artifactId}</id>
+						<phase>package</phase>
+						<configuration>
+							<finalName>${project.artifactId}-${project.version}</finalName>
+							<archive>
+								<manifest>
+									<mainClass>${mainClass}</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

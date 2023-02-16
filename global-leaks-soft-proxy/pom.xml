@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>freedom1b2830</groupId>
+		<artifactId>global-leaks-soft</artifactId>
+		<version>main-SNAPSHOT</version>
+	</parent>
+	<artifactId>global-leaks-soft-proxy</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-module</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-api</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>freedom1b2830</groupId>
+			<artifactId>global-leaks-soft-database</artifactId>
+			<version>main-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>
