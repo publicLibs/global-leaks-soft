@@ -7,13 +7,13 @@
 		<artifactId>global-leaks-soft</artifactId>
 		<version>main-SNAPSHOT</version>
 	</parent>
+	<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 	<artifactId>global-leaks-soft-module-network-watchdog</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.github.publicLibs</groupId>
+			<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 			<artifactId>global-leaks-soft-module</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-
 </project>

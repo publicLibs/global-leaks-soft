@@ -7,15 +7,16 @@
 		<artifactId>global-leaks-soft</artifactId>
 		<version>main-SNAPSHOT</version>
 	</parent>
+	<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 	<artifactId>global-leaks-soft-database</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.github.publicLibs</groupId>
+			<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 			<artifactId>global-leaks-soft-module</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.publicLibs</groupId>
+			<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 			<artifactId>global-leaks-soft-api</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>

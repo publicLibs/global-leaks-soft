@@ -7,5 +7,6 @@
 		<artifactId>global-leaks-soft</artifactId>
 		<version>main-SNAPSHOT</version>
 	</parent>
+	<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 	<artifactId>global-leaks-soft-config</artifactId>
 </project>

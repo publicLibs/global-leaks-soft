@@ -8,15 +8,16 @@
 		<version>main-SNAPSHOT</version>
 	</parent>
 	<artifactId>global-leaks-soft-module</artifactId>
+	<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.github.publicLibs</groupId>
+			<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 			<artifactId>global-leaks-soft-config</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.publicLibs</groupId>
+			<groupId>com.github.publicLibs.global-leaks-soft</groupId>
 			<artifactId>global-leaks-soft-api</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>
