@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.github.freedom1b2830</groupId>
+		<groupId>com.github.publicLibs</groupId>
 		<artifactId>global-leaks-soft</artifactId>
 		<version>main-SNAPSHOT</version>
 	</parent>
 	<artifactId>global-leaks-soft-module-network-watchdog</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>com.github.freedom1b2830</groupId>
+			<groupId>com.github.publicLibs</groupId>
 			<artifactId>global-leaks-soft-module</artifactId>
 			<version>main-SNAPSHOT</version>
 		</dependency>

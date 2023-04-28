@@ -1,7 +1,7 @@
 /**
  *
  */
-package wcas.freedom1b2830.globalleaks;
+package wcas.freedom1b2830.globalleaks.proxy;
 
 /**
  * @author user_dev_new

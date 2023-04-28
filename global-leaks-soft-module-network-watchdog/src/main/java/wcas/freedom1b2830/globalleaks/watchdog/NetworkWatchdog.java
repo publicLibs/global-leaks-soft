@@ -7,8 +7,8 @@ public class NetworkWatchdog extends GlobalLeakModule {
 
 	boolean networkOk;
 
-	public NetworkWatchdog(final GlobalLeakConfig config) {
-		super(config, "NetworkWatchdog");
+	public NetworkWatchdog(final GlobalLeakConfig configInput) {
+		super(configInput, "NetworkWatchdog");
 		worker = new NetworkWatchdogWorker(this, loggerName) {
 			// ok
 		};

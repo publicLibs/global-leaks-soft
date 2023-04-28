@@ -6,6 +6,10 @@ import java.sql.SQLException;
 
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import com.github.publiclibs.langpack.Langpack;
+import com.github.publiclibs.langpack.provider.file.DefaultLangProvider;
+import com.github.publiclibs.langpack.provider.file.JarResourcesLangProvider;
+
 import freedom1b2830.globalleaks.instance.utils.ConfigUtils;
 import freedom1b2830.globalleaks.module.telegrambot.BotTelegram;
 import freedom1b2830.globalleaks.module.telegrambot.TelegramModule;
@@ -24,6 +28,8 @@ public class GlobalLeaksV3 {
 	public static final File configFile = new File(String.format("%s-config.yaml", GlobalLeaksV3.class.getName()));
 
 	public static void main(final String[] args) throws Exception {
+		Langpack.getInstance().registerPrivider(new DefaultLangProvider());
+		Langpack.getInstance().registerPrivider(new JarResourcesLangProvider());
 		final var v3 = new GlobalLeaksV3();
 		v3.init();
 	}

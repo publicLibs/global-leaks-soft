@@ -19,21 +19,18 @@ public abstract class ProxyCheckerWorker extends GlobalLeakModuleWorker {
 	protected ProxyCheckerWorker(final ProxyCheckerModule checkerModule, final String loggerName) {
 		super(checkerModule, loggerName);
 
-		actionThreadPreLoop = new GlobalLeakModuleWorkerAction() {
-			public @Override void exec() throws IOException {
-				for (var i = 0; i < checkerModule.config.proxyGCM.checker.maxThreads; i++) {
-					final ProxyCheckerThread checker = new ProxyCheckerThread(ProxyCheckerWorker.this, log(), i) {
+		actionThreadPreLoop = () -> {
+			for (var i = 0; i < checkerModule.config.proxyGCM.checker.maxThreads; i++) {
+				final ProxyCheckerThread checker = new ProxyCheckerThread(ProxyCheckerWorker.this, log(), i) {
 
-						@Override
-						protected void end(final ProxyData proxyCheckResult) {
-							checkerModule.checkedProxy(proxyCheckResult);
-						}
-					};
-					threads.add(checker);
-					checker.start();
-				}
-
+					protected @Override void end(final ProxyData proxyCheckResult) {
+						checkerModule.checkedProxy(proxyCheckResult);
+					}
+				};
+				threads.add(checker);
+				checker.start();
 			}
+
 		};
 
 		actionThreadLoop = new GlobalLeakModuleWorkerAction() {

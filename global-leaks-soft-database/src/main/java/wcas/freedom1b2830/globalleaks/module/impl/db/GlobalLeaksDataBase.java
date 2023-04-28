@@ -82,7 +82,7 @@ public abstract class GlobalLeaksDataBase extends GlobalLeakModule {
 		if (customersDao.idExists(customer.id)) {
 			return false;
 		}
-		final var aa = customersDao.create(customer);
+		customersDao.create(customer);
 		return true;
 	}
 

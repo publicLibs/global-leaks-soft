@@ -11,7 +11,7 @@ import java.net.Proxy.Type;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import wcas.freedom1b2830.globalleaks.LogMode;
-import wcas.freedom1b2830.globalleaks.ProxyTypes;
+import wcas.freedom1b2830.globalleaks.proxy.ProxyTypes;
 import wcas.freedom1b2830.globalleaks.proxy.exceptions.CloudflareDetectedException;
 import wcas.freedom1b2830.globalleaks.proxy.exceptions.TorDetectedException;
 import wcas.freedom1b2830.globalleaks.proxy.exceptions.detected.MikrotikHttpProxyDetectedException;
@@ -65,7 +65,7 @@ public class ProxyConnectUtils {
 	 * @param proxydata
 	 * @throws AuthProxyNeededException
 	 */
-	private static void checkIfAuthNeeded(ClassicHttpResponse response, ProxyData proxydata)
+	private static void checkIfAuthNeeded(final ClassicHttpResponse response, final ProxyData proxydata)
 			throws AuthProxyNeededException {
 
 		final var httpCode = response.getCode();
@@ -81,7 +81,7 @@ public class ProxyConnectUtils {
 	 * @throws CloudflareDetectedException
 	 *
 	 */
-	private static void checkIfCloudflare(ClassicHttpResponse response, ProxyData proxydata)
+	private static void checkIfCloudflare(final ClassicHttpResponse response, final ProxyData proxydata)
 			throws CloudflareDetectedException {
 		final var headersIterator = response.headerIterator();
 		while (headersIterator.hasNext()) {
@@ -100,7 +100,7 @@ public class ProxyConnectUtils {
 	 * @param response
 	 * @param proxydata
 	 */
-	private static void checkIfForbidden(ClassicHttpResponse response, ProxyData proxydata) {
+	private static void checkIfForbidden(final ClassicHttpResponse response, final ProxyData proxydata) {
 		final var httpCode = response.getCode();
 		if (httpCode == 403) {
 
@@ -113,7 +113,7 @@ public class ProxyConnectUtils {
 	 * @throws TorDetectedException
 	 *
 	 */
-	private static void checkIfTor(ProxyData proxydata, StringBuilder http) throws TorDetectedException {
+	private static void checkIfTor(final ProxyData proxydata, final StringBuilder http) throws TorDetectedException {
 		if (http.toString().contains("title>Tor is not an HTTP Proxy</title")) {
 			throw new TorDetectedException(proxydata.host);
 		}
@@ -195,7 +195,7 @@ public class ProxyConnectUtils {
 		ProxyConnectUtils.postTest(proxydata);
 	}
 
-	public static boolean httpToConnect2(final ProxyData proxydata, final StringBuilder http, ProxyTypes types)
+	public static boolean httpToConnect2(final ProxyData proxydata, final StringBuilder http, final ProxyTypes types)
 			throws CloudflareDetectedException, AuthProxyNeededException, TorDetectedException,
 			MikrotikHttpProxyDetectedException {
 		if (types != ProxyTypes.HTTPS && types != ProxyTypes.HTTP) {
@@ -265,7 +265,7 @@ public class ProxyConnectUtils {
 		return false;
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		final var proxyDatas = new CopyOnWriteArrayList<ProxyData>();
 		try {
 			proxyDatas.add(ProxyData.parse("103.153.254.198:80"));
@@ -378,7 +378,7 @@ public class ProxyConnectUtils {
 		proxyDatas.stream().forEachOrdered(proxy -> {
 			System.err.println("in " + proxy);
 			mainOutSideCheck(proxy);
-			if (proxy.socketConnection) {
+			if (proxy.socketConnection.booleanValue()) {
 				System.err.println("out " + proxy);
 			}
 			System.err.println();
@@ -386,8 +386,8 @@ public class ProxyConnectUtils {
 
 	}
 
-	private static void mainOutHttp(ProxyData proxydata) throws CloudflareDetectedException, AuthProxyNeededException,
-			TorDetectedException, MikrotikHttpProxyDetectedException {
+	private static void mainOutHttp(final ProxyData proxydata) throws CloudflareDetectedException,
+			AuthProxyNeededException, TorDetectedException, MikrotikHttpProxyDetectedException {
 		try {
 			mainOutHttpX(proxydata, ProxyTypes.HTTP);
 		} catch (final IOException e) {
@@ -395,8 +395,8 @@ public class ProxyConnectUtils {
 		}
 	}
 
-	private static void mainOutHttpS(ProxyData proxydata) throws CloudflareDetectedException, AuthProxyNeededException,
-			TorDetectedException, MikrotikHttpProxyDetectedException {
+	private static void mainOutHttpS(final ProxyData proxydata) throws CloudflareDetectedException,
+			AuthProxyNeededException, TorDetectedException, MikrotikHttpProxyDetectedException {
 		try {
 			mainOutHttpX(proxydata, ProxyTypes.HTTPS);
 		} catch (final SSLException e) {
@@ -409,7 +409,7 @@ public class ProxyConnectUtils {
 		}
 	}
 
-	private static void mainOutHttpX(ProxyData proxydata, ProxyTypes schema)
+	private static void mainOutHttpX(final ProxyData proxydata, final ProxyTypes schema)
 			throws IOException, CloudflareDetectedException, AuthProxyNeededException, TorDetectedException,
 			MikrotikHttpProxyDetectedException {
 		if (schema != ProxyTypes.HTTP && schema != ProxyTypes.HTTPS) {
@@ -428,47 +428,51 @@ public class ProxyConnectUtils {
 		final var connectionManagerBuilder = PoolingHttpClientConnectionManagerBuilder.create();
 		connectionManagerBuilder.setDefaultConnectionConfig(connectionConfig);
 
-		final var connectionManager = connectionManagerBuilder.build();
-		final var httpclient = HttpClients.custom().setRoutePlanner(routePlanner)
-				.setConnectionManager(connectionManager).build();
+		try (var connectionManager = connectionManagerBuilder.build();
+				var httpclient = HttpClients.custom().setRoutePlanner(routePlanner)
+						.setConnectionManager(connectionManager).build()) {
+			final var request = new HttpGet("/");
+			request.setConfig(requestConfig);
 
-		final var request = new HttpGet("/");
-		request.setConfig(requestConfig);
+			final var context = new BasicHttpContext();
 
-		final var context = new BasicHttpContext();
+			try (var response = httpclient.executeOpen(target, request, context)) {
+				checkIfCloudflare(response, proxydata);
+				checkIfAuthNeeded(response, proxydata);
+				checkIfForbidden(response, proxydata);
 
-		try (var response = httpclient.executeOpen(target, request, context)) {
-			checkIfCloudflare(response, proxydata);
-			checkIfAuthNeeded(response, proxydata);
-			checkIfForbidden(response, proxydata);
+				try (var entity = response.getEntity();
+						var contentStream = entity.getContent();
+						var reader = new BufferedReader(new InputStreamReader(contentStream, StandardCharsets.UTF_8))) {
+					reader.lines().forEachOrdered(line -> {
+						http.append(line).append('\n');
+					});
 
-			try (var entity = response.getEntity();
-					var contentStream = entity.getContent();
-					var reader = new BufferedReader(new InputStreamReader(contentStream, StandardCharsets.UTF_8))) {
-				reader.lines().forEachOrdered(line -> {
-					http.append(line).append('\n');
-				});
-
-			} // response
-			if (http.charAt(http.length() - 1) == '\n') {
-				http.deleteCharAt(http.length() - 1);
-			}
-
-			if (IPV4_PATTERN.matcher(http.toString()).matches() || IPV6_PATTERN.matcher(http.toString()).matches()) {
-
-			}
-
-			if (http.length() > 100) {
-				checkIfTor(proxydata, http);
-				if (http.toString().contains("Mikrotik HttpProxy")) {
-					throw new MikrotikHttpProxyDetectedException(proxydata.host);
+				} // response
+				if (http.charAt(http.length() - 1) == '\n') {
+					http.deleteCharAt(http.length() - 1);
 				}
 
-				if (LogMode.forLogGlobalList(LogMode.CRIT)) {
-					LOGGER.warn("unwanted data:{}", http);
-				}
-			}
+				if (IPV4_PATTERN.matcher(http.toString()).matches()
+						|| IPV6_PATTERN.matcher(http.toString()).matches()) {
 
+				}
+
+				if (http.length() > 100) {
+					checkIfTor(proxydata, http);
+					if (http.toString().contains("Mikrotik HttpProxy")) {
+						throw new MikrotikHttpProxyDetectedException(proxydata.host);
+					}
+
+					if (LogMode.forLogGlobalList(LogMode.CRIT)) {
+						LOGGER.warn("unwanted data:{}", http);
+					}
+				}
+
+			}
+		} catch (final UnsupportedOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		// OLD
@@ -514,7 +518,7 @@ public class ProxyConnectUtils {
 	/**
 	 * @param proxydata
 	 */
-	private static void mainOutSocks(ProxyData proxydata) {
+	private static void mainOutSocks(final ProxyData proxydata) {
 		// TODO Auto-generated method stub
 
 	}
@@ -556,20 +560,20 @@ public class ProxyConnectUtils {
 	public static boolean socks4ToConnect(final ProxyData proxydata, final StringBuilder socks4Builder) {
 		try {
 			final var proxy = new Proxy(Type.SOCKS, new InetSocketAddress(proxydata.host, proxydata.port.intValue()));
-			final var url = new URL("http://ident.me/");
+
+			final var url = URI.create("http://ident.me/").toURL();
 			final var connection = (HttpURLConnection) url.openConnection(proxy);
 			connection.setConnectTimeout(Long.valueOf(timeout.toMilliseconds()).intValue());
 			connection.setReadTimeout(Long.valueOf(timeout.toMilliseconds()).intValue());
 			try (var is = connection.getInputStream()) {
 				try (var bufferedReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-					String line;
-					while ((line = bufferedReader.readLine()) != null) {
+					bufferedReader.lines().forEach(line -> {
 						if (line.matches("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")) {
 							socks4Builder.append(line);
 						} else {
 							socks4Builder.append(line).append('\n');
 						}
-					}
+					});
 				}
 			}
 			ProxyDataSocks.socksOk(proxydata, connection.getResponseCode(), connection.getResponseMessage(),

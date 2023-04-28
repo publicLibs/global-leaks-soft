@@ -12,36 +12,17 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.publiclibs.langpack.Langpack;
 
 import freedom1b2830.globalleaks.module.telegrambot.cmd.TelegramCMD;
 import wcas.freedom1b2830.globalleaks.config.GlobalLeakConfig;
-import wcas.freedom1b2830.globalleaks.lang.LangPack;
 import wcas.freedom1b2830.globalleaks.module.GlobalLeakModule;
 
 public abstract class TelegramModule extends GlobalLeakModule {
 
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(new YAMLFactory());
 
-	protected static void sendFallBack(//
-			final BotTelegram telegram, //
-			final Long userId, //
-			final String userLang, //
-			final String key, //
-			final String fallback) {
-		try {
-			final var sendMessage = new SendMessage();
-			sendMessage.setChatId(userId);
-			sendMessage.setText(LangPack.get(userLang, key, fallback));
-			telegram.execute(sendMessage);
-		} catch (final TelegramApiException e) {
-			e.printStackTrace();
-		}
-	}
-
-	BotTelegram bot = new BotTelegram() {
-		public @Override String getBotToken() {
-			return config.telegramBotConfig.token;
-		}
+	BotTelegram bot = new BotTelegram(config.telegramBotConfig.token) {
 
 		public @Override String getBotUsername() {
 			return config.telegramBotConfig.botUsername;
@@ -69,6 +50,10 @@ public abstract class TelegramModule extends GlobalLeakModule {
 				case SOCKS -> {
 					sendSOCKS(telegram, message, time, userId, user_login, userFN, userLN, userLang);
 				}
+				case BALANCE -> throw new IllegalArgumentException("Unexpected value: " + cmd);
+				case PAYMENT -> throw new IllegalArgumentException("Unexpected value: " + cmd);
+				case START -> throw new IllegalArgumentException("Unexpected value: " + cmd);
+				case STATUS -> throw new IllegalArgumentException("Unexpected value: " + cmd);
 
 				default -> throw new IllegalArgumentException("Unexpected value: " + cmd);
 				}
@@ -161,6 +146,31 @@ public abstract class TelegramModule extends GlobalLeakModule {
 	}
 
 	protected abstract Integer moneyCostCurrentGet(TelegramCMD type);
+
+	public void sendFallBack(//
+			final BotTelegram telegram, //
+			final Long userId, //
+			final String userLang, //
+			final String key, //
+			final String fallback) {
+		try {
+			final var sendMessage = new SendMessage();
+			sendMessage.setChatId(userId);
+
+			String msg;
+			try {
+				msg = Langpack.getData(key, userLang);
+			} catch (final Exception e) {// aka runtime
+				e.printStackTrace();
+				System.err.println(key + " " + userLang);
+				msg = fallback;
+			}
+			sendMessage.setText(msg);
+			telegram.execute(sendMessage);
+		} catch (final TelegramApiException e) {
+			e.printStackTrace();
+		}
+	}
 
 	protected abstract void sendHTTP(BotTelegram telegram, Message message, Integer time, Long userId, String userLogin,
 			String userFN, String userLN, String userLang);

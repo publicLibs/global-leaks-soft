@@ -23,6 +23,10 @@ public enum LogMode {
 	static boolean forLogCrit(final LogMode testMode) {
 		return switch (testMode) {
 		case CRIT -> true;
+		case DEBUG -> false;
+		case INFO -> false;
+		case NONE -> false;
+		case WARN -> false;
 		default -> false;
 		};
 	}
@@ -42,6 +46,8 @@ public enum LogMode {
 	private static boolean forLogInfo(final LogMode testMode) {
 		return switch (testMode) {
 		case INFO, WARN, CRIT -> true;
+		case DEBUG -> false;
+		case NONE -> false;
 		default -> false;
 		};
 	}
@@ -49,6 +55,9 @@ public enum LogMode {
 	static boolean forLogWarn(final LogMode testMode) {
 		return switch (testMode) {
 		case WARN, CRIT -> true;
+		case DEBUG -> false;
+		case INFO -> false;
+		case NONE -> false;
 		default -> false;
 		};
 	}

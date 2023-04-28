@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.protocol.BasicHttpContext;
 
 import wcas.freedom1b2830.globalleaks.AtomicCopyOnWriteArrayList;
 import wcas.freedom1b2830.globalleaks.LogMode;
@@ -44,11 +46,19 @@ public abstract class ProxyFWWEbGetterWorker extends GlobalLeakModuleWorker {
 						if (LogMode.forLogGlobalList(LogMode.DEBUG)) {
 							log().info("connection");
 						}
-						try (var response = httpClient.execute(get)) {
+
+						// FIXME
+						System.err.println(get.getAuthority());
+						final var context = new BasicHttpContext();
+
+						final var target = new HttpHost(source);// TODO GET HOST
+
+						try (var classicHttpResponse = httpClient.executeOpen(target, get, context)) {
 							if (LogMode.forLogGlobalList(LogMode.DEBUG)) {
 								log().info("connected");
 							}
-							try (var httpEntity = response.getEntity()) {
+
+							try (var httpEntity = classicHttpResponse.getEntity()) {
 								if (LogMode.forLogGlobalList(LogMode.DEBUG)) {
 									log().info("get data");
 								}
